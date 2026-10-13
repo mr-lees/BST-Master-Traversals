@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A-Level Computer Science: Binary Search Tree Simulator</title>
-    <!-- Tailwind CSS -->
+    <title>Eduqas A-Level CS: Binary Search Tree Simulator (A500)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -12,91 +11,79 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            900: '#0c4a6e'
+                        eduqas: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#16a34a',
+                            600: '#15803d',
+                            700: '#166534',
+                            800: '#14532d',
+                            900: '#132e1a'
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         code, pre, .font-mono { font-family: 'Fira Code', monospace; }
-        
-        /* Smooth tree transitions */
-        .tree-node {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .tree-line {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Custom scrollbars */
+        .tree-node, .tree-line { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
-        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 9999px; }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans antialiased">
 
-    <!-- Header Navbar -->
-    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm">
+    <!-- Header / Navbar -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-40 shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-lg">
                     <i class="fa-solid fa-tree text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg leading-tight bg-gradient-to-r from-sky-600 to-indigo-600 dark:from-sky-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                        BST Master & Traversals
+                    <h1 class="font-bold text-base sm:text-lg leading-tight bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+                        Eduqas A-Level CS BST Master
                     </h1>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">A-Level Computer Science Interactive Visualizer</p>
+                    <p class="text-xs text-slate-400 font-medium">Component 1 (A500U10-1) Data Structures & Traversals</p>
                 </div>
             </div>
 
-            <!-- Top Controls & Mode Switcher -->
-            <div class="flex items-center gap-2 sm:gap-4">
-                <nav class="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl text-xs font-semibold">
-                    <button id="nav-vis-btn" onclick="switchTab('visualizer')" class="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-sm transition">
-                        <i class="fa-solid fa-diagram-project mr-1.5"></i>Visualizer
-                    </button>
-                    <button id="nav-theory-btn" onclick="switchTab('theory')" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition">
-                        <i class="fa-solid fa-book-open mr-1.5"></i>Study Guide & Theory
-                    </button>
-                </nav>
-
-                <button onclick="toggleDarkMode()" class="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition" title="Toggle Light/Dark Theme">
-                    <i id="theme-icon" class="fa-solid fa-moon text-lg"></i>
+            <!-- Tab Navigation Buttons -->
+            <nav class="flex bg-slate-900/90 p-1 rounded-xl text-xs font-semibold border border-slate-700/60 overflow-x-auto">
+                <button id="nav-sim-btn" onclick="switchTab('simulator')" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white shadow-sm transition flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-diagram-project"></i> Simulator
                 </button>
-            </div>
+                <button id="nav-array-btn" onclick="switchTab('array')" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-table"></i> 2D Memory Array
+                </button>
+                <button id="nav-boundary-btn" onclick="switchTab('boundary')" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-draw-polygon"></i> Boundary/Flag Method
+                </button>
+                <button id="nav-spec-btn" onclick="switchTab('spec')" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5 whitespace-nowrap">
+                    <i class="fa-solid fa-book-bookmark"></i> Eduqas Spec Notes
+                </button>
+            </nav>
         </div>
     </header>
 
-    <!-- Main Content Container -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
 
-        <!-- TAB 1: VISUALIZER SECTION -->
-        <section id="tab-visualizer" class="flex flex-col gap-6">
+        <!-- ================= TAB 1: INTERACTIVE SIMULATOR ================= -->
+        <section id="tab-simulator" class="flex flex-col gap-6">
             
             <!-- Controls Bar -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-sm">
                 
-                <!-- Tree Modification Inputs -->
-                <div class="lg:col-span-6 flex flex-wrap items-center gap-2">
-                    <div class="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-900/80 p-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                        <input type="number" id="node-value-input" min="1" max="99" placeholder="Val (1-99)" class="w-20 px-2 py-1.5 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 font-mono">
-                        <button onclick="handleInsertNode()" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center gap-1">
+                <!-- Operations Input -->
+                <div class="lg:col-span-7 flex flex-wrap items-center gap-2">
+                    <div class="flex items-center gap-1.5 bg-slate-900 p-1.5 rounded-xl border border-slate-700">
+                        <input type="number" id="node-val-input" min="1" max="99" placeholder="Val (1-99)" class="w-20 px-2.5 py-1.5 text-xs bg-slate-800 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono text-white">
+                        <button onclick="handleInsertNode()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center gap-1">
                             <i class="fa-solid fa-plus"></i> Insert
                         </button>
                         <button onclick="handleDeleteNode()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center gap-1">
@@ -104,137 +91,165 @@
                         </button>
                     </div>
 
-                    <button onclick="generateRandomTree()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold transition border border-slate-200 dark:border-slate-600 flex items-center gap-1.5">
-                        <i class="fa-solid fa-shuffle text-sky-500"></i> Random Tree
-                    </button>
-                    
-                    <button onclick="resetTreeToDefault()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold transition border border-slate-200 dark:border-slate-600 flex items-center gap-1.5">
-                        <i class="fa-solid fa-rotate-left"></i> Reset
-                    </button>
+                    <!-- Eduqas Presets -->
+                    <select id="preset-select" onchange="loadPresetTree(this.value)" class="px-3 py-2 bg-slate-900 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="eduqas_exam">Preset: Eduqas Exam Sample</option>
+                        <option value="balanced">Preset: Balanced BST</option>
+                        <option value="degenerate">Preset: Degenerate (Right Skewed)</option>
+                        <option value="perfect">Preset: Perfect BST</option>
+                    </select>
 
-                    <button onclick="clearTree()" class="px-3 py-2 bg-slate-100 hover:bg-rose-50 dark:bg-slate-700/50 dark:hover:bg-rose-950/30 text-rose-600 dark:text-rose-400 rounded-xl text-xs font-semibold transition border border-slate-200 dark:border-slate-600 flex items-center gap-1.5">
+                    <button onclick="generateRandomTree()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl text-xs font-semibold transition border border-slate-600 flex items-center gap-1.5">
+                        <i class="fa-solid fa-shuffle text-emerald-400"></i> Random
+                    </button>
+                    <button onclick="clearTree()" class="px-3 py-2 bg-slate-700 hover:bg-rose-950/60 text-rose-300 rounded-xl text-xs font-semibold transition border border-slate-600 flex items-center gap-1.5">
                         <i class="fa-solid fa-xmark"></i> Clear
                     </button>
                 </div>
 
-                <!-- Traversal Trigger Buttons -->
-                <div class="lg:col-span-6 flex flex-wrap items-center justify-start lg:justify-end gap-2">
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400 mr-1 hidden sm:inline">Traversals:</span>
-                    <button onclick="startTraversal('preorder')" class="px-3 py-2 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-arrow-down-short-wide"></i> Pre-Order
+                <!-- Traversals Trigger Buttons -->
+                <div class="lg:col-span-5 flex flex-wrap items-center justify-start lg:justify-end gap-2">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 hidden sm:inline mr-1">Traversals:</span>
+                    <button onclick="startTraversal('preorder')" class="px-3 py-2 bg-indigo-950/80 border border-indigo-700 hover:bg-indigo-900/80 text-indigo-300 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-down-short-wide"></i> NLR (Pre)
                     </button>
-                    <button onclick="startTraversal('inorder')" class="px-3 py-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-arrow-right-long"></i> In-Order
+                    <button onclick="startTraversal('inorder')" class="px-3 py-2 bg-emerald-950/80 border border-emerald-700 hover:bg-emerald-900/80 text-emerald-300 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-right-long"></i> LNR (In)
                     </button>
-                    <button onclick="startTraversal('postorder')" class="px-3 py-2 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-arrow-up-wide-short"></i> Post-Order
+                    <button onclick="startTraversal('postorder')" class="px-3 py-2 bg-amber-950/80 border border-amber-700 hover:bg-amber-900/80 text-amber-300 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-up-wide-short"></i> LRN (Post)
                     </button>
                 </div>
             </div>
 
-            <!-- Main Interactive Canvas & Execution Status Panel -->
+            <!-- Main Interactive Display Canvas + Side Panels -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-                <!-- Left Column: Interactive Tree SVG Canvas (8 cols) -->
+                <!-- Tree Visualizer Canvas Column (8 cols) -->
                 <div class="lg:col-span-8 flex flex-col gap-4">
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-sm relative overflow-hidden flex flex-col h-[520px]">
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-sm relative overflow-hidden flex flex-col h-[520px]">
                         
-                        <!-- Canvas Header / Status Indicator -->
-                        <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700/60 z-10">
+                        <!-- Canvas Header / Status Bar -->
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-700/80 z-10">
                             <div class="flex items-center gap-2">
                                 <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" id="status-dot"></span>
-                                <span id="current-action-text" class="text-sm font-semibold text-slate-700 dark:text-slate-200">
-                                    Interactive Tree Canvas Ready
+                                <span id="current-action-text" class="text-xs sm:text-sm font-semibold text-slate-200">
+                                    Eduqas BST Visualizer Ready
                                 </span>
                             </div>
-                            <div id="tree-depth-badge" class="text-xs bg-slate-100 dark:bg-slate-700 px-2.5 py-1 rounded-full text-slate-500 dark:text-slate-400 font-mono">
-                                Nodes: 0 | Height: 0
+                            <div class="flex items-center gap-2">
+                                <span id="step-counter-badge" class="text-xs bg-emerald-950/80 border border-emerald-700/80 text-emerald-400 px-2.5 py-1 rounded-full font-mono font-bold">
+                                    Step: 0 / 0
+                                </span>
+                                <span id="boundary-mode-badge" class="hidden text-[11px] bg-amber-950/80 border border-amber-700 text-amber-300 px-2 py-0.5 rounded-full font-semibold">
+                                    Boundary Overlay Active
+                                </span>
                             </div>
                         </div>
 
-                        <!-- SVG Render Window -->
-                        <div class="relative flex-1 w-full h-full overflow-auto bg-slate-50/50 dark:bg-slate-900/50 rounded-xl my-2" id="canvas-container">
+                        <!-- SVG Tree Interactive Canvas -->
+                        <div class="relative flex-1 w-full h-full overflow-auto bg-slate-900/80 rounded-xl my-2 border border-slate-700/50" id="canvas-container">
                             <svg id="tree-svg" class="w-full h-full min-w-[600px] min-h-[400px] select-none"></svg>
                         </div>
 
-                        <!-- Animation Playback Controller Bar -->
-                        <div class="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-700/60 z-10">
+                        <!-- Manual Step & Playback Control Toolbar -->
+                        <div class="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-slate-700/80 z-10">
+                            
+                            <!-- Stepping Controls -->
                             <div class="flex items-center gap-1.5">
-                                <button id="btn-pause-play" onclick="togglePausePlay()" disabled class="p-2 w-9 h-9 flex items-center justify-center bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl disabled:opacity-40 hover:bg-slate-200 dark:hover:bg-slate-600 transition">
-                                    <i class="fa-solid fa-pause" id="play-pause-icon"></i>
+                                <button id="btn-step-back" onclick="stepBackward()" disabled class="h-9 px-3 bg-slate-700 hover:bg-slate-600 disabled:opacity-30 text-slate-200 rounded-xl text-xs font-semibold transition border border-slate-600 flex items-center gap-1">
+                                    <i class="fa-solid fa-backward-step"></i> Prev
                                 </button>
-                                <button id="btn-step" onclick="stepAnimationForward()" disabled class="p-2 w-9 h-9 flex items-center justify-center bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl disabled:opacity-40 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Step Forward">
-                                    <i class="fa-solid fa-forward-step"></i>
+                                
+                                <button id="btn-pause-play" onclick="togglePausePlay()" disabled class="w-9 h-9 flex items-center justify-center bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 text-white rounded-xl transition shadow-sm">
+                                    <i class="fa-solid fa-play" id="play-pause-icon"></i>
                                 </button>
-                                <button id="btn-stop" onclick="stopAnimation()" disabled class="p-2 w-9 h-9 flex items-center justify-center bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 rounded-xl disabled:opacity-40 hover:bg-rose-100 dark:hover:bg-rose-900/60 transition" title="Reset Animation">
+                                
+                                <button id="btn-step-forward" onclick="stepForward()" disabled class="h-9 px-3 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 text-white rounded-xl text-xs font-semibold transition shadow-sm flex items-center gap-1">
+                                    Next <i class="fa-solid fa-forward-step"></i>
+                                </button>
+
+                                <button id="btn-stop" onclick="stopAnimation()" disabled class="w-9 h-9 flex items-center justify-center bg-rose-950/80 text-rose-400 hover:bg-rose-900 border border-rose-800 disabled:opacity-30 rounded-xl transition">
                                     <i class="fa-solid fa-stop"></i>
                                 </button>
                             </div>
 
-                            <!-- Speed Controller Slider -->
+                            <!-- Speed Slider -->
                             <div class="flex items-center gap-2">
                                 <i class="fa-solid fa-gauge-high text-xs text-slate-400"></i>
-                                <span class="text-xs text-slate-500 font-medium">Speed:</span>
-                                <input type="range" id="speed-slider" min="200" max="1800" step="100" value="900" class="w-24 sm:w-32 accent-sky-500 cursor-pointer">
+                                <span class="text-xs text-slate-400 font-medium">Speed:</span>
+                                <input type="range" id="speed-slider" min="200" max="1800" step="100" value="900" class="w-24 accent-emerald-500 cursor-pointer">
                             </div>
 
-                            <!-- Key / Legend -->
-                            <div class="flex items-center gap-3 text-[11px] font-medium text-slate-500">
-                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block"></span> Visiting</span>
-                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Processed</span>
-                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> Target/Succ</span>
+                            <!-- Legend -->
+                            <div class="flex items-center gap-3 text-[11px] text-slate-400 font-medium">
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Visit</span>
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block"></span> Output</span>
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> Target</span>
                             </div>
                         </div>
 
                     </div>
 
-                    <!-- Output Buffer / Sequence Result Bar -->
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-sm flex flex-col gap-2">
+                    <!-- Output Buffer Array -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-sm flex flex-col gap-2">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                                <i class="fa-solid fa-list-ol text-sky-500"></i> Traversal Output / Output Buffer
+                                <i class="fa-solid fa-list-ol text-emerald-400"></i> Output Sequence / Traversal Output
                             </span>
-                            <button onclick="copyOutputBuffer()" class="text-xs text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1">
+                            <button onclick="copyOutputBuffer()" class="text-xs text-emerald-400 hover:underline flex items-center gap-1">
                                 <i class="fa-regular fa-copy"></i> Copy Output
                             </button>
                         </div>
-                        <div id="output-buffer" class="min-h-[44px] p-2.5 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-sm flex items-center flex-wrap gap-2 text-slate-700 dark:text-slate-300">
-                            <span class="text-xs text-slate-400 italic">Traversal output will appear here sequentially...</span>
+                        <div id="output-buffer" class="min-h-[44px] p-2.5 bg-slate-900 rounded-xl border border-slate-700 font-mono text-sm flex items-center flex-wrap gap-2 text-slate-200">
+                            <span class="text-xs text-slate-500 italic">Output elements will accumulate here as nodes are visited...</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column: Algorithm Pseudocode & Execution Log (4 cols) -->
+                <!-- Right Column Panel: Pseudocode, Call Stack, Explanation Log (4 cols) -->
                 <div class="lg:col-span-4 flex flex-col gap-4">
                     
-                    <!-- Real-time Exam-Style Pseudocode Panel -->
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-sm flex flex-col h-[320px]">
-                        <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-700">
-                            <span id="pseudocode-title" class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                                <i class="fa-solid fa-code text-indigo-500"></i> Exam Pseudocode (AQA/OCR)
+                    <!-- Eduqas Pseudocode Window -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-sm flex flex-col h-[280px]">
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-700">
+                            <span id="pseudocode-title" class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-code text-emerald-400"></i> Eduqas Pseudocode
                             </span>
-                            <span class="text-[10px] font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded">
-                                Sync Highlight
+                            <span class="text-[10px] font-mono bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-800">
+                                Eduqas A500
                             </span>
                         </div>
-                        <div class="flex-1 mt-2 overflow-auto font-mono text-xs bg-slate-900 text-slate-200 p-3 rounded-xl leading-relaxed" id="pseudocode-container">
-                            <!-- Dynamically generated code lines -->
-                            <div class="text-slate-500 italic">// Select an operation or traversal to view algorithm walkthrough</div>
+                        <div class="flex-1 mt-2 overflow-auto font-mono text-xs bg-slate-950 text-slate-300 p-3 rounded-xl leading-relaxed border border-slate-800" id="pseudocode-container">
+                            <div class="text-slate-500 italic">// Select a traversal (NLR, LNR, LRN) or tree operation to view Eduqas exam pseudocode.</div>
                         </div>
                     </div>
 
-                    <!-- Step-by-Step Educational Explanation & Event Log -->
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-sm flex flex-col flex-1 min-h-[220px]">
-                        <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-700">
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                                <i class="fa-solid fa-comment-dots text-emerald-500"></i> Step Explanation & Console Log
+                    <!-- Call Stack Panel -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-sm flex flex-col h-[180px]">
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-700">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-layer-group text-amber-400"></i> Recursion Call Stack
+                            </span>
+                            <span id="stack-count-badge" class="text-[10px] font-mono bg-slate-900 px-2 py-0.5 rounded text-slate-400 border border-slate-700">Depth: 0</span>
+                        </div>
+                        <div id="call-stack-container" class="flex-1 mt-2 p-2 bg-slate-950 rounded-xl border border-slate-800 font-mono text-xs overflow-y-auto flex flex-col-reverse gap-1">
+                            <span class="text-slate-500 italic text-[11px]">Call stack empty</span>
+                        </div>
+                    </div>
+
+                    <!-- Step Note Banner -->
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 shadow-sm flex flex-col flex-1 min-h-[180px]">
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-700">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-comment-dots text-sky-400"></i> Eduqas Step Notes
                             </span>
                         </div>
-                        <div id="step-explanation" class="my-2 p-3 bg-sky-50 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900/50 rounded-xl text-xs text-sky-900 dark:text-sky-200 font-medium">
-                            Ready. Select a traversal mode or enter a value to insert/delete nodes.
+                        <div id="step-explanation" class="my-2 p-3 bg-emerald-950/40 border border-emerald-800/80 rounded-xl text-xs text-emerald-200 font-medium leading-relaxed">
+                            Ready. Perform an insertion, deletion, or traversal to inspect step-by-step execution.
                         </div>
-                        <div id="action-log" class="flex-1 overflow-auto space-y-1.5 font-mono text-[11px] text-slate-500 dark:text-slate-400 pr-1">
-                            <div>[System] BST Initialized.</div>
+                        <div id="action-log" class="flex-1 overflow-auto space-y-1 font-mono text-[11px] text-slate-400 pr-1">
+                            <div>[Eduqas System] Initialized BST with 2D array pointer model.</div>
                         </div>
                     </div>
 
@@ -244,173 +259,248 @@
 
         </section>
 
-        <!-- TAB 2: THEORY & STUDY GUIDE SECTION -->
-        <section id="tab-theory" class="hidden flex-col gap-8">
+        <!-- ================= TAB 2: EDUQAS 2D MEMORY ARRAY ================= -->
+        <section id="tab-array" class="hidden flex-col gap-6">
             
-            <!-- Hero banner for syllabus -->
-            <div class="bg-gradient-to-r from-sky-600 to-indigo-700 text-white rounded-3xl p-6 sm:p-8 shadow-md">
-                <div class="max-w-3xl">
-                    <span class="bg-white/20 text-white text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wider">A-Level Computer Science Specification</span>
-                    <h2 class="text-2xl sm:text-3xl font-bold mt-3 mb-2">Binary Search Trees: Traversals & Deletions</h2>
-                    <p class="text-sky-100 text-sm leading-relaxed">
-                        Master the required theoretical concepts for OCR (H446), AQA (7517), WJEC, and Pearson Edexcel specifications. Understand tree depth, traversal orders, stack behavior, recursion, and node deletion edge-cases.
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-sm">
+                <div class="max-w-3xl mb-6">
+                    <span class="bg-emerald-950 border border-emerald-800 text-emerald-400 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+                        Eduqas Dynamic Memory Model
+                    </span>
+                    <h2 class="text-xl sm:text-2xl font-bold text-white mt-3 mb-2">
+                        2D Array / Parallel Arrays Pointer Representation
+                    </h2>
+                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                        In Eduqas A-Level Computer Science, trees are frequently represented in memory using parallel 1D arrays or a 2D array. Null pointers are designated using <code class="bg-slate-900 text-emerald-400 px-1.5 py-0.5 rounded font-mono">-1</code> (or <code class="bg-slate-900 text-emerald-400 px-1.5 py-0.5 rounded font-mono">NULL</code>).
                     </p>
                 </div>
-            </div>
 
-            <!-- Traversals Overview Grid -->
-            <div>
-                <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-arrows-split-up-and-left text-sky-500"></i> 1. Tree Traversals & Specification Applications
-                </h3>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    
-                    <!-- Pre-order Card -->
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-lg text-xs font-bold font-mono">Root -> Left -> Right</span>
-                                <span class="text-xs font-semibold text-slate-400">Pre-Order</span>
-                            </div>
-                            <h4 class="font-bold text-base text-slate-800 dark:text-slate-100 mb-2">Pre-Order Traversal</h4>
-                            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                                Visit the current node <b>first</b>, then recursively process the left subtree, followed by the right subtree.
-                            </p>
-                            <div class="space-y-2 text-xs">
-                                <div class="p-2.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-100 dark:border-slate-700">
-                                    <span class="font-bold text-indigo-600 dark:text-indigo-400 block mb-0.5"><i class="fa-solid fa-copy mr-1"></i> Copying / Cloning Trees:</span>
-                                    Preserves structural hierarchy when re-inserting elements into a fresh tree.
-                                </div>
-                                <div class="p-2.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-100 dark:border-slate-700">
-                                    <span class="font-bold text-indigo-600 dark:text-indigo-400 block mb-0.5"><i class="fa-solid fa-calculator mr-1"></i> Prefix Expressions (Polish Notation):</span>
-                                    Used in expression trees where operators precede operands (e.g. <code class="bg-slate-200 dark:bg-slate-700 px-1 rounded">+ A B</code>).
-                                </div>
-                            </div>
-                        </div>
+                <!-- Live Array Table -->
+                <div class="overflow-x-auto rounded-xl border border-slate-700 bg-slate-950 p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider font-mono">
+                            Memory Table: [Index, Data, LeftPointer, RightPointer]
+                        </span>
+                        <span id="root-index-badge" class="text-xs bg-emerald-900/60 text-emerald-300 border border-emerald-700 px-2.5 py-1 rounded-lg font-mono font-bold">
+                            Root Index: 0
+                        </span>
                     </div>
 
-                    <!-- In-order Card -->
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 rounded-lg text-xs font-bold font-mono">Left -> Root -> Right</span>
-                                <span class="text-xs font-semibold text-slate-400">In-Order</span>
-                            </div>
-                            <h4 class="font-bold text-base text-slate-800 dark:text-slate-100 mb-2">In-Order Traversal</h4>
-                            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                                Visit all nodes in the left subtree, then visit the root node, and finally traverse the right subtree.
-                            </p>
-                            <div class="space-y-2 text-xs">
-                                <div class="p-2.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-100 dark:border-slate-700">
-                                    <span class="font-bold text-emerald-600 dark:text-emerald-400 block mb-0.5"><i class="fa-solid fa-arrow-down-1-9 mr-1"></i> Sorted Key Retrieval:</span>
-                                    In a valid BST, an in-order traversal guarantees visiting keys in strictly ascending numerical/alphabetical order.
-                                </div>
-                                <div class="p-2.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-100 dark:border-slate-700">
-                                    <span class="font-bold text-emerald-600 dark:text-emerald-400 block mb-0.5"><i class="fa-solid fa-code-compare mr-1"></i> Infix Expressions:</span>
-                                    Produces standard mathematical infix expression representation from binary expression trees.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Post-order Card -->
-                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="px-2.5 py-1 bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 rounded-lg text-xs font-bold font-mono">Left -> Right -> Root</span>
-                                <span class="text-xs font-semibold text-slate-400">Post-Order</span>
-                            </div>
-                            <h4 class="font-bold text-base text-slate-800 dark:text-slate-100 mb-2">Post-Order Traversal</h4>
-                            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                                Recursively visit left and right subtrees before visiting the parent root node.
-                            </p>
-                            <div class="space-y-2 text-xs">
-                                <div class="p-2.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-100 dark:border-slate-700">
-                                    <span class="font-bold text-amber-600 dark:text-amber-400 block mb-0.5"><i class="fa-solid fa-trash mr-1"></i> Safe Tree Deletion / Deallocation:</span>
-                                    Children are freed before the parent node, avoiding dangling pointers in low-level memory management.
-                                </div>
-                                <div class="p-2.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-100 dark:border-slate-700">
-                                    <span class="font-bold text-amber-600 dark:text-amber-400 block mb-0.5"><i class="fa-solid fa-layer-group mr-1"></i> Postfix / RPN Evaluation:</span>
-                                    Generates Reverse Polish Notation (<code class="bg-slate-200 dark:bg-slate-700 px-1 rounded">A B +</code>) evaluated easily using stack architectures.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Deletion Scenarios Explanation Section -->
-            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl p-6 sm:p-8 shadow-sm">
-                <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-diagram-successor text-rose-500"></i> 2. Deleting Nodes from a BST (3 Essential Cases)
-                </h3>
-                
-                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
-                    Deleting a node from a Binary Search Tree requires maintaining the BST invariant: for every node, all left subtree values must be smaller, and all right subtree values must be greater.
-                </p>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Case 1 -->
-                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
-                        <div class="w-8 h-8 rounded-lg bg-sky-500 text-white font-bold flex items-center justify-center text-sm mb-3">1</div>
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100 mb-1 text-sm">Leaf Node (0 Children)</h4>
-                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                            <strong>Action:</strong> Direct Removal.<br>
-                            Simply set the parent node's pointer (left or right) pointing to this target node to <code class="text-sky-500">null</code> or <code class="text-sky-500">None</code>.
-                        </p>
-                    </div>
-
-                    <!-- Case 2 -->
-                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
-                        <div class="w-8 h-8 rounded-lg bg-indigo-500 text-white font-bold flex items-center justify-center text-sm mb-3">2</div>
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100 mb-1 text-sm">Node with 1 Child</h4>
-                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                            <strong>Action:</strong> Bypass Target Node.<br>
-                            Connect the target node's parent directly to the target node's single child subtree, bypassing the deleted node.
-                        </p>
-                    </div>
-
-                    <!-- Case 3 -->
-                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
-                        <div class="w-8 h-8 rounded-lg bg-amber-500 text-white font-bold flex items-center justify-center text-sm mb-3">3</div>
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100 mb-1 text-sm">Node with 2 Children</h4>
-                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                            <strong>Action:</strong> In-Order Successor Replacement.<br>
-                            Find the <strong>In-Order Successor</strong> (smallest value in the right subtree: go right once, then left as far as possible). Copy its value to the target, then recursively delete that successor leaf/single child.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- A-Level Exam Cheat Sheet Table -->
-            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl p-6 sm:p-8 shadow-sm">
-                <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-graduation-cap text-indigo-500"></i> A-Level Exam Quick Reference
-                </h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                        <thead class="bg-slate-100 dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 font-bold uppercase text-[11px]">
+                    <table class="w-full text-left text-xs font-mono">
+                        <thead class="bg-slate-800 text-slate-300 font-bold uppercase border-b border-slate-700">
                             <tr>
-                                <th class="p-3 rounded-l-xl">Operation</th>
-                                <th class="p-3">Average Complexity</th>
-                                <th class="p-3">Worst Case Complexity</th>
-                                <th class="p-3 rounded-r-xl">Reason for Worst Case</th>
+                                <th class="p-3">Array Index</th>
+                                <th class="p-3">Data Value</th>
+                                <th class="p-3">Left Pointer</th>
+                                <th class="p-3">Right Pointer</th>
+                                <th class="p-3">Status</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                        <tbody id="array-table-body" class="divide-y divide-slate-800 text-slate-200">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-300">
+                    <div class="p-4 bg-slate-900 border border-slate-700 rounded-xl">
+                        <h4 class="font-bold text-emerald-400 mb-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-info"></i> How Pointers Work in Array Form
+                        </h4>
+                        <p class="leading-relaxed">
+                            Each array entry contains the node value alongside integer indices pointing to left and right children. A value of <code class="text-rose-400">-1</code> indicates no child node (NULL pointer).
+                        </p>
+                    </div>
+                    <div class="p-4 bg-slate-900 border border-slate-700 rounded-xl">
+                        <h4 class="font-bold text-emerald-400 mb-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-list-check"></i> Eduqas Exam Array Questions
+                        </h4>
+                        <p class="leading-relaxed">
+                            Questions may ask you to trace traversals directly from array tables or construct array tables given a binary search tree diagram.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ================= TAB 3: BOUNDARY / FLAG METHOD HELPER ================= -->
+        <section id="tab-boundary" class="hidden flex-col gap-6">
+            
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-sm">
+                <div class="max-w-3xl mb-6">
+                    <span class="bg-amber-950 border border-amber-800 text-amber-300 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+                        Eduqas Pen-and-Paper Exam Technique
+                    </span>
+                    <h2 class="text-xl sm:text-2xl font-bold text-white mt-3 mb-2">
+                        The Outline / Boundary / Flag Method
+                    </h2>
+                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                        Eduqas examiners recommend drawing an unbroken line around the outside of the tree structure (starting from the left of the root) and adding dots/flags to nodes based on traversal type.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    
+                    <!-- Pre-Order Flag -->
+                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-indigo-400 text-sm">NLR (Pre-Order)</span>
+                                <span class="px-2 py-0.5 bg-indigo-950 text-indigo-300 rounded text-[10px] font-bold border border-indigo-800">Left Dot</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                                Place a flag/dot on the <b>LEFT</b> side of every node. As you trace around the border, record the node value when your pen touches the left dot.
+                            </p>
+                        </div>
+                        <button onclick="enableBoundaryOverlay('preorder')" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-eye"></i> Show Left Flags on Simulator
+                        </button>
+                    </div>
+
+                    <!-- In-Order Flag -->
+                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-emerald-400 text-sm">LNR (In-Order)</span>
+                                <span class="px-2 py-0.5 bg-emerald-950 text-emerald-300 rounded text-[10px] font-bold border border-emerald-800">Bottom Dot</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                                Place a flag/dot on the <b>BOTTOM</b> of every node. Record the node value as your boundary pen passes under the bottom of each node.
+                            </p>
+                        </div>
+                        <button onclick="enableBoundaryOverlay('inorder')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-eye"></i> Show Bottom Flags on Simulator
+                        </button>
+                    </div>
+
+                    <!-- Post-Order Flag -->
+                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-amber-400 text-sm">LRN (Post-Order)</span>
+                                <span class="px-2 py-0.5 bg-amber-950 text-amber-300 rounded text-[10px] font-bold border border-amber-800">Right Dot</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                                Place a flag/dot on the <b>RIGHT</b> side of every node. Record the node value as your pen touches the right dot while looping back upwards.
+                            </p>
+                        </div>
+                        <button onclick="enableBoundaryOverlay('postorder')" class="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-eye"></i> Show Right Flags on Simulator
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="p-4 bg-slate-900/60 border border-slate-700 rounded-xl text-xs text-slate-300 flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-amber-400 text-lg mt-0.5"></i>
+                    <div>
+                        <span class="font-bold text-white block mb-0.5">Eduqas Exam Tip:</span>
+                        In Component 1 questions asking for tree traversals, always sketch the outline boundary method in pencil on the tree diagram provided on your exam paper to avoid missing nodes or misordering sequences!
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ================= TAB 4: EDUQAS SPEC & EXAM NOTES ================= -->
+        <section id="tab-spec" class="hidden flex-col gap-6">
+            
+            <div class="bg-gradient-to-r from-emerald-900/80 to-teal-900/80 border border-emerald-700 text-white rounded-2xl p-6 shadow-md">
+                <span class="bg-emerald-950 border border-emerald-700 text-emerald-300 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+                    Official Specification Breakdown
+                </span>
+                <h2 class="text-2xl font-bold mt-3 mb-2">Eduqas A-Level CS (A500U10-1) Binary Search Trees</h2>
+                <p class="text-slate-200 text-xs sm:text-sm leading-relaxed max-w-3xl">
+                    Comprehensive revision notes covering binary search tree operations, memory representations, tree traversals, and node deletion algorithms as required by Eduqas/WJEC mark schemes.
+                </p>
+            </div>
+
+            <!-- Traversals Summary Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700">
+                    <span class="text-xs font-bold font-mono text-indigo-400 block mb-1">NLR / Pre-Order</span>
+                    <h3 class="font-bold text-base text-white mb-2">Pre-Order Traversal</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-3">Visits Root node first, then recursively visits Left subtree and Right subtree.</p>
+                    <ul class="text-xs space-y-1.5 text-slate-300 list-disc list-inside">
+                        <li><b>Tree Cloning / Duplication:</b> Preserves original BST structure upon re-insertion.</li>
+                        <li><b>Prefix Evaluation:</b> Evaluates operator expression trees (Polish Notation).</li>
+                        <li><b>Directory Traversal:</b> Traverses directory hierarchies top-down.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700">
+                    <span class="text-xs font-bold font-mono text-emerald-400 block mb-1">LNR / In-Order</span>
+                    <h3 class="font-bold text-base text-white mb-2">In-Order Traversal</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-3">Recursively traverses Left subtree, visits Root node, then recursively traverses Right subtree.</p>
+                    <ul class="text-xs space-y-1.5 text-slate-300 list-disc list-inside">
+                        <li><b>Ascending Order Output:</b> Retrieves BST key values in ascending sorted sequence.</li>
+                        <li><b>Infix Notation:</b> Outputs standard arithmetic math expressions with operators between operands.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700">
+                    <span class="text-xs font-bold font-mono text-amber-400 block mb-1">LRN / Post-Order</span>
+                    <h3 class="font-bold text-base text-white mb-2">Post-Order Traversal</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-3">Recursively processes Left subtree, then Right subtree, and finally visits Root node.</p>
+                    <ul class="text-xs space-y-1.5 text-slate-300 list-disc list-inside">
+                        <li><b>Safe Memory Deallocation:</b> Deletes child nodes prior to parent nodes (bottom-up deletion).</li>
+                        <li><b>Reverse Polish Notation (RPN):</b> Converts expression trees to postfix strings for stack calculators.</li>
+                        <li><b>Directory Size Calculation:</b> Aggregates subdirectory file sizes before root folder.</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Deletion Algorithm Rules -->
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-trash-can text-rose-400"></i> Eduqas Node Deletion Rules (3 Cases)
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-300">
+                    <div class="p-3.5 bg-slate-900 rounded-xl border border-slate-700">
+                        <span class="font-bold text-rose-400 block mb-1">Case 1: Leaf Node (0 Children)</span>
+                        Set parent pointer referencing target node to <code class="text-emerald-400 font-mono">-1</code> (NULL).
+                    </div>
+                    <div class="p-3.5 bg-slate-900 rounded-xl border border-slate-700">
+                        <span class="font-bold text-amber-400 block mb-1">Case 2: 1 Child Node</span>
+                        Bypass target node by setting parent pointer directly to target node's single child.
+                    </div>
+                    <div class="p-3.5 bg-slate-900 rounded-xl border border-slate-700">
+                        <span class="font-bold text-indigo-400 block mb-1">Case 3: 2 Children Nodes</span>
+                        Locate In-Order Successor (smallest value in right subtree), replace target value with successor value, then remove successor leaf.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Big-O Table -->
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-clock text-emerald-400"></i> Time Complexity Table
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300 font-mono">
+                        <thead class="bg-slate-900 text-slate-200 border-b border-slate-700 uppercase">
                             <tr>
-                                <td class="p-3 font-semibold text-sky-600 dark:text-sky-400">Search / Insert / Delete</td>
-                                <td class="p-3 font-mono">O(log n)</td>
-                                <td class="p-3 font-mono text-rose-500">O(n)</td>
-                                <td class="p-3">Unbalanced / degenerate tree (resembles a linked list).</td>
+                                <th class="p-3">Operation</th>
+                                <th class="p-3">Average Case</th>
+                                <th class="p-3">Worst Case</th>
+                                <th class="p-3">Eduqas Explanation</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700/60">
+                            <tr>
+                                <td class="p-3 text-emerald-400 font-bold">Search / Insert / Delete</td>
+                                <td class="p-3">O(log n)</td>
+                                <td class="p-3 text-rose-400">O(n)</td>
+                                <td class="p-3">Worst case occurs in degenerate/unbalanced trees (acts as linked list).</td>
                             </tr>
                             <tr>
-                                <td class="p-3 font-semibold text-sky-600 dark:text-sky-400">Tree Traversal (All)</td>
-                                <td class="p-3 font-mono">O(n)</td>
-                                <td class="p-3 font-mono">O(n)</td>
-                                <td class="p-3">Every node in the binary tree must be visited exactly once.</td>
+                                <td class="p-3 text-emerald-400 font-bold">Tree Traversals (NLR/LNR/LRN)</td>
+                                <td class="p-3">O(n)</td>
+                                <td class="p-3">O(n)</td>
+                                <td class="p-3">Every node in the binary search tree must be visited exactly once.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -421,133 +511,128 @@
 
     </main>
 
+    <!-- JavaScript Logic & Engine -->
     <script>
-        // --- DATA STRUCTURE DEFINITIONS ---
         class TreeNode {
             constructor(val) {
                 this.val = val;
                 this.left = null;
                 this.right = null;
                 this.id = 'node-' + Math.random().toString(36).substring(2, 9);
-                // Layout coordinates
                 this.x = 0;
                 this.y = 0;
             }
         }
 
-        // Global State Management
-        let root = null;
-        let animationQueue = [];
-        let isAnimating = false;
-        let isPaused = false;
-        let animationTimer = null;
-        let animationSpeed = 900; // milliseconds per step
+        function cloneTree(node) {
+            if (!node) return null;
+            const copy = new TreeNode(node.val);
+            copy.id = node.id;
+            copy.x = node.x;
+            copy.y = node.y;
+            copy.left = cloneTree(node.left);
+            copy.right = cloneTree(node.right);
+            return copy;
+        }
 
-        // Pseudocode Repository for A-Level Curriculums
-        const PSEUDOCODE_TEMPLATES = {
+        // Global State
+        let root = null;
+        let animationHistory = [];
+        let currentStepIndex = -1;
+        let isAutoPlaying = false;
+        let autoPlayTimer = null;
+        let animationSpeed = 900;
+        let activeBoundaryOverlay = null; // 'preorder', 'inorder', 'postorder' or null
+
+        // Eduqas Pseudocode Templates
+        const EDUQAS_PSEUDOCODE = {
             preorder: [
-                { line: "procedure preOrder(node)", text: "procedure preOrder(node)" },
-                { line: "  if node != null then", text: "  if node ≠ null then" },
-                { line: "    print(node.value)", text: "    print(node.value)  // Visit Root" },
-                { line: "    preOrder(node.left)", text: "    preOrder(node.left) // Traverse Left" },
-                { line: "    preOrder(node.right)", text: "    preOrder(node.right)// Traverse Right" },
-                { line: "  endIf", text: "  endIf" },
-                { line: "endProcedure", text: "endProcedure" }
+                { text: "PROCEDURE preOrder(node)" },
+                { text: "  IF node ≠ NULL THEN" },
+                { text: "    OUTPUT node.Data  // NLR: 1. Visit Root" },
+                { text: "    preOrder(node.LeftPointer) // 2. Recurse Left" },
+                { text: "    preOrder(node.RightPointer)// 3. Recurse Right" },
+                { text: "  ENDIF" },
+                { text: "ENDPROCEDURE" }
             ],
             inorder: [
-                { line: "procedure inOrder(node)", text: "procedure inOrder(node)" },
-                { line: "  if node != null then", text: "  if node ≠ null then" },
-                { line: "    inOrder(node.left)", text: "    inOrder(node.left)  // Traverse Left" },
-                { line: "    print(node.value)", text: "    print(node.value)   // Visit Root" },
-                { line: "    inOrder(node.right)", text: "    inOrder(node.right) // Traverse Right" },
-                { line: "  endIf", text: "  endIf" },
-                { line: "endProcedure", text: "endProcedure" }
+                { text: "PROCEDURE inOrder(node)" },
+                { text: "  IF node ≠ NULL THEN" },
+                { text: "    inOrder(node.LeftPointer)  // LNR: 1. Recurse Left" },
+                { text: "    OUTPUT node.Data   // 2. Visit Root" },
+                { text: "    inOrder(node.RightPointer) // 3. Recurse Right" },
+                { text: "  ENDIF" },
+                { text: "ENDPROCEDURE" }
             ],
             postorder: [
-                { line: "procedure postOrder(node)", text: "procedure postOrder(node)" },
-                { line: "  if node != null then", text: "  if node ≠ null then" },
-                { line: "    postOrder(node.left)", text: "    postOrder(node.left)  // Traverse Left" },
-                { line: "    postOrder(node.right)", text: "    postOrder(node.right) // Traverse Right" },
-                { line: "    print(node.value)", text: "    print(node.value)    // Visit Root" },
-                { line: "  endIf", text: "  endIf" },
-                { line: "endProcedure", text: "endProcedure" }
+                { text: "PROCEDURE postOrder(node)" },
+                { text: "  IF node ≠ NULL THEN" },
+                { text: "    postOrder(node.LeftPointer)  // LRN: 1. Recurse Left" },
+                { text: "    postOrder(node.RightPointer) // 2. Recurse Right" },
+                { text: "    OUTPUT node.Data    // 3. Visit Root" },
+                { text: "  ENDIF" },
+                { text: "ENDPROCEDURE" }
             ],
             insert: [
-                { line: "function insert(node, val)", text: "function insert(node, val)" },
-                { line: "  if node == null then return new Node(val)", text: "  if node == null then return new Node(val)" },
-                { line: "  if val < node.val then", text: "  if val < node.val then" },
-                { line: "    node.left = insert(node.left, val)", text: "    node.left = insert(node.left, val)" },
-                { line: "  else if val > node.val then", text: "  else if val > node.val then" },
-                { line: "    node.right = insert(node.right, val)", text: "    node.right = insert(node.right, val)" },
-                { line: "  return node", text: "  return node" }
+                { text: "FUNCTION insertNode(node, val)" },
+                { text: "  IF node == NULL THEN RETURN newNode(val)" },
+                { text: "  IF val < node.Data THEN" },
+                { text: "    node.LeftPointer = insertNode(node.LeftPointer, val)" },
+                { text: "  ELSE IF val > node.Data THEN" },
+                { text: "    node.RightPointer = insertNode(node.RightPointer, val)" },
+                { text: "  ENDIF" },
+                { text: "  RETURN node" },
+                { text: "ENDFUNCTION" }
             ],
             delete: [
-                { line: "function delete(node, key)", text: "function delete(node, key)" },
-                { line: "  if node == null then return null", text: "  if node == null then return null" },
-                { line: "  if key < node.val then node.left = delete(node.left, key)", text: "  if key < node.val then search Left" },
-                { line: "  else if key > node.val then node.right = delete(node.right, key)", text: "  else if key > node.val then search Right" },
-                { line: "  else // Node found!", text: "  else // Target Found" },
-                { line: "    if node.left == null then return node.right // Case 1 & 2", text: "    if 0 or 1 child: replace with child" },
-                { line: "    if node.right == null then return node.left", text: "    // Case 3: 2 children" },
-                { line: "    succ = findMin(node.right)", text: "    succ = findMin(node.right)" },
-                { line: "    node.val = succ.val", text: "    node.val = succ.val // Copy value" },
-                { line: "    node.right = delete(node.right, succ.val)", text: "    node.right = delete(node.right, succ.val)" }
+                { text: "FUNCTION deleteNode(node, target)" },
+                { text: "  IF node == NULL THEN RETURN NULL" },
+                { text: "  IF target < node.Data THEN search Left" },
+                { text: "  ELSE IF target > node.Data THEN search Right" },
+                { text: "  ELSE // Node Found" },
+                { text: "    IF Case 1 (0 children) THEN RETURN NULL" },
+                { text: "    IF Case 2 (1 child) THEN RETURN ChildPointer" },
+                { text: "    // Case 3 (2 children)" },
+                { text: "    succ = findInOrderSuccessor(node.RightPointer)" },
+                { text: "    node.Data = succ.Data" },
+                { text: "    node.RightPointer = deleteNode(node.RightPointer, succ.Data)" },
+                { text: "  ENDIF" },
+                { text: "  RETURN node" },
+                { text: "ENDFUNCTION" }
             ]
         };
 
-        // Initialization on Load
         window.addEventListener('load', () => {
             setupSpeedSlider();
-            resetTreeToDefault();
+            loadPresetTree('eduqas_exam');
         });
 
-        // Theme Switcher
-        function toggleDarkMode() {
-            const html = document.documentElement;
-            const icon = document.getElementById('theme-icon');
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                icon.className = "fa-solid fa-sun text-lg text-amber-500";
-            } else {
-                html.classList.add('dark');
-                icon.className = "fa-solid fa-moon text-lg";
-            }
-            renderTree();
-        }
-
-        // Tab Navigation
         function switchTab(tabName) {
-            const visTab = document.getElementById('tab-visualizer');
-            const theoryTab = document.getElementById('tab-theory');
-            const visBtn = document.getElementById('nav-vis-btn');
-            const theoryBtn = document.getElementById('nav-theory-btn');
+            const tabs = ['simulator', 'array', 'boundary', 'spec'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                const btn = document.getElementById(`nav-${t}-btn`);
+                if (t === tabName) {
+                    el.classList.remove('hidden');
+                    el.classList.add('flex');
+                    btn.className = "px-3 py-1.5 rounded-lg bg-emerald-600 text-white shadow-sm transition flex items-center gap-1.5 whitespace-nowrap font-semibold";
+                } else {
+                    el.classList.add('hidden');
+                    el.classList.remove('flex');
+                    btn.className = "px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5 whitespace-nowrap font-semibold";
+                }
+            });
 
-            if (tabName === 'visualizer') {
-                visTab.classList.remove('hidden');
-                visTab.classList.add('flex');
-                theoryTab.classList.add('hidden');
-                theoryTab.classList.remove('flex');
-                visBtn.className = "px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-sm transition";
-                theoryBtn.className = "px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition";
-            } else {
-                theoryTab.classList.remove('hidden');
-                theoryTab.classList.add('flex');
-                visTab.classList.add('hidden');
-                visTab.classList.remove('flex');
-                theoryBtn.className = "px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-sm transition";
-                visBtn.className = "px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition";
-            }
+            if (tabName === 'array') updateArrayTable();
         }
 
         function setupSpeedSlider() {
             const slider = document.getElementById('speed-slider');
             slider.addEventListener('input', (e) => {
-                // Invert so slider right = faster
                 animationSpeed = 2000 - parseInt(e.target.value);
             });
         }
 
-        // Logging helper
         function logAction(msg) {
             const logContainer = document.getElementById('action-log');
             const entry = document.createElement('div');
@@ -560,18 +645,17 @@
             document.getElementById('step-explanation').textContent = text;
         }
 
-        // Render Pseudocode with Highlight
         function displayPseudocode(key, activeLineIndex = -1) {
             const container = document.getElementById('pseudocode-container');
-            const template = PSEUDOCODE_TEMPLATES[key];
+            const template = EDUQAS_PSEUDOCODE[key];
             if (!template) return;
 
-            document.getElementById('pseudocode-title').innerHTML = `<i class="fa-solid fa-code text-indigo-500"></i> Exam Pseudocode (${key.toUpperCase()})`;
+            document.getElementById('pseudocode-title').innerHTML = `<i class="fa-solid fa-code text-emerald-400"></i> Eduqas Pseudocode (${key.toUpperCase()})`;
 
             let html = '';
             template.forEach((item, idx) => {
                 const isActive = idx === activeLineIndex;
-                const bgClass = isActive ? 'bg-sky-500/30 text-sky-200 font-bold border-l-2 border-sky-400 pl-2' : 'text-slate-300 pl-2';
+                const bgClass = isActive ? 'bg-emerald-500/30 text-emerald-200 font-bold border-l-2 border-emerald-400 pl-2' : 'text-slate-300 pl-2';
                 html += `<div class="py-0.5 transition-all ${bgClass}">${escapeHtml(item.text)}</div>`;
             });
             container.innerHTML = html;
@@ -581,14 +665,31 @@
             return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
-        // --- BST CORE OPERATIONS ---
+        function renderCallStack(stack) {
+            const container = document.getElementById('call-stack-container');
+            const badge = document.getElementById('stack-count-badge');
+            if (!stack || stack.length === 0) {
+                container.innerHTML = '<span class="text-slate-500 italic text-[11px]">Call stack empty</span>';
+                badge.textContent = 'Depth: 0';
+                return;
+            }
+
+            badge.textContent = `Depth: ${stack.length}`;
+            let html = '';
+            stack.forEach((frame) => {
+                html += `<div class="p-1.5 bg-emerald-950/80 border border-emerald-700/80 rounded text-emerald-300 font-mono text-xs flex items-center justify-between">
+                    <span>${escapeHtml(frame)}</span>
+                    <i class="fa-solid fa-turn-down text-[10px] rotate-90"></i>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // Tree Operations
         function insertNodeCore(node, val) {
             if (!node) return new TreeNode(val);
-            if (val < node.val) {
-                node.left = insertNodeCore(node.left, val);
-            } else if (val > node.val) {
-                node.right = insertNodeCore(node.right, val);
-            }
+            if (val < node.val) node.left = insertNodeCore(node.left, val);
+            else if (val > node.val) node.right = insertNodeCore(node.right, val);
             return node;
         }
 
@@ -602,67 +703,89 @@
             return 1 + countNodes(node.left) + countNodes(node.right);
         }
 
-        // Default BST generator for quick startup
-        function resetTreeToDefault() {
+        function loadPresetTree(presetType) {
             stopAnimation();
             root = null;
-            const defaultValues = [50, 30, 70, 20, 40, 60, 80, 10, 35, 65];
-            defaultValues.forEach(v => {
-                root = insertNodeCore(root, v);
-            });
+
+            if (presetType === 'eduqas_exam') {
+                [45, 22, 68, 12, 35, 54, 81, 28, 72].forEach(v => root = insertNodeCore(root, v));
+            } else if (presetType === 'balanced') {
+                [50, 25, 75, 15, 35, 65, 85].forEach(v => root = insertNodeCore(root, v));
+            } else if (presetType === 'degenerate') {
+                [10, 20, 30, 40, 50, 60].forEach(v => root = insertNodeCore(root, v));
+            } else if (presetType === 'perfect') {
+                [40, 20, 60, 10, 30, 50, 70].forEach(v => root = insertNodeCore(root, v));
+            }
+
             renderTree();
-            logAction("Reset tree to default standard A-Level state.");
-            setExplanation("Tree reset. Ready for traversals or node deletions.");
-            displayPseudocode('preorder');
+            updateArrayTable();
+            logAction(`Loaded Eduqas preset: ${presetType}`);
+            setExplanation(`Loaded preset structure (${presetType}). Ready for step-by-step traversal.`);
             clearOutputBuffer();
+            renderCallStack([]);
         }
 
         function clearTree() {
             stopAnimation();
             root = null;
             renderTree();
-            logAction("Cleared binary tree.");
+            updateArrayTable();
+            logAction("Cleared BST.");
             setExplanation("Tree is empty.");
             clearOutputBuffer();
+            renderCallStack([]);
         }
 
         function generateRandomTree() {
             stopAnimation();
             root = null;
-            const count = Math.floor(Math.random() * 5) + 7; // 7 to 11 nodes
+            const count = Math.floor(Math.random() * 4) + 6;
             const set = new Set();
-            while(set.size < count) {
-                set.add(Math.floor(Math.random() * 89) + 10);
-            }
-            set.forEach(v => {
-                root = insertNodeCore(root, v);
-            });
+            while(set.size < count) set.add(Math.floor(Math.random() * 89) + 10);
+            set.forEach(v => root = insertNodeCore(root, v));
             renderTree();
-            logAction(`Generated random tree with ${count} nodes.`);
+            updateArrayTable();
+            logAction(`Generated random BST with ${count} nodes.`);
             setExplanation("Random BST generated.");
             clearOutputBuffer();
+            renderCallStack([]);
         }
 
         function handleInsertNode() {
-            const input = document.getElementById('node-value-input');
+            const input = document.getElementById('node-val-input');
             const val = parseInt(input.value);
             if (isNaN(val) || val < 1 || val > 99) {
                 alert("Please enter a valid integer between 1 and 99.");
                 return;
             }
-
             if (findNode(root, val)) {
-                alert(`Value ${val} already exists in the BST. Duplicate values are not permitted.`);
+                alert(`Value ${val} already exists in the BST.`);
                 return;
             }
-
             if (calculateTreeDepth(root) >= 5) {
-                alert("Maximum tree height limit reached for optimal visual rendering.");
+                alert("Maximum depth limit reached for layout display.");
                 return;
             }
 
             stopAnimation();
-            animateInsertion(val);
+            buildInsertionHistory(val);
+            input.value = '';
+        }
+
+        function handleDeleteNode() {
+            const input = document.getElementById('node-val-input');
+            const val = parseInt(input.value);
+            if (isNaN(val)) {
+                alert("Please enter a node value to delete.");
+                return;
+            }
+            if (!findNode(root, val)) {
+                alert(`Value ${val} is not present in the tree.`);
+                return;
+            }
+
+            stopAnimation();
+            buildDeletionHistory(val);
             input.value = '';
         }
 
@@ -673,65 +796,34 @@
             return findNode(node.right, val);
         }
 
-        function handleDeleteNode() {
-            const input = document.getElementById('node-value-input');
-            const val = parseInt(input.value);
-            if (isNaN(val)) {
-                alert("Please enter a node value to delete.");
-                return;
-            }
-
-            if (!findNode(root, val)) {
-                alert(`Node ${val} is not present in the tree.`);
-                return;
-            }
-
-            stopAnimation();
-            animateDeletion(val);
-            input.value = '';
-        }
-
-        // --- SVG GRAPHICS ENGINE & LAYOUT ---
-        function renderTree(highlightState = {}) {
+        // SVG Render Engine
+        function renderTree(customRoot = root, highlightState = {}) {
             const svg = document.getElementById('tree-svg');
-            svg.innerHTML = ''; // Clear SVG
+            svg.innerHTML = '';
+            const displayRoot = customRoot || root;
 
-            if (!root) {
-                document.getElementById('tree-depth-badge').textContent = 'Nodes: 0 | Height: 0';
-                return;
-            }
-
-            const depth = calculateTreeDepth(root);
-            const nodeCount = countNodes(root);
-            document.getElementById('tree-depth-badge').textContent = `Nodes: ${nodeCount} | Height: ${depth}`;
+            if (!displayRoot) return;
 
             const svgWidth = Math.max(svg.clientWidth || 600, 600);
-            const startY = 50;
-            const rowHeight = 70;
+            const startY = 45;
+            const rowHeight = 65;
 
-            // Calculate node coordinates recursively
-            calculateCoordinates(root, 0, svgWidth / 2, svgWidth / 4, startY, rowHeight);
-
-            // Draw Lines/Edges first (so nodes sit on top)
-            drawEdges(svg, root);
-
-            // Draw Nodes
-            drawNodes(svg, root, highlightState);
+            calculateCoordinates(displayRoot, 0, svgWidth / 2, svgWidth / 4, startY, rowHeight);
+            drawEdges(svg, displayRoot);
+            drawNodes(svg, displayRoot, highlightState);
         }
 
         function calculateCoordinates(node, level, x, xOffset, startY, rowHeight) {
             if (!node) return;
             node.x = x;
             node.y = startY + level * rowHeight;
-
-            const nextOffset = Math.max(xOffset / 2, 24);
+            const nextOffset = Math.max(xOffset / 2, 22);
             calculateCoordinates(node.left, level + 1, x - xOffset, nextOffset, startY, rowHeight);
             calculateCoordinates(node.right, level + 1, x + xOffset, nextOffset, startY, rowHeight);
         }
 
         function drawEdges(svg, node) {
             if (!node) return;
-
             if (node.left) {
                 createLine(svg, node.x, node.y, node.left.x, node.left.y);
                 drawEdges(svg, node.left);
@@ -748,7 +840,7 @@
             line.setAttribute('y1', y1);
             line.setAttribute('x2', x2);
             line.setAttribute('y2', y2);
-            line.setAttribute('class', 'stroke-slate-300 dark:stroke-slate-600 stroke-2 tree-line');
+            line.setAttribute('class', 'stroke-slate-600 stroke-2 tree-line');
             svg.appendChild(line);
         }
 
@@ -758,264 +850,331 @@
             const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
             g.setAttribute('class', 'tree-node cursor-pointer');
             g.onclick = () => {
-                document.getElementById('node-value-input').value = node.val;
+                document.getElementById('node-val-input').value = node.val;
             };
 
-            // Circle styling based on animation state
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             circle.setAttribute('cx', node.x);
             circle.setAttribute('cy', node.y);
-            circle.setAttribute('r', 20);
+            circle.setAttribute('r', 19);
 
-            let fillClass = "fill-white dark:fill-slate-800 stroke-sky-500 stroke-2";
-            let textClass = "fill-slate-800 dark:fill-slate-100 font-bold text-sm";
+            let fillClass = "fill-slate-800 stroke-emerald-500 stroke-2";
+            let textClass = "fill-white font-bold text-xs";
 
             if (highlightState.visiting === node.id) {
-                fillClass = "fill-sky-500 stroke-sky-300 stroke-4 animate-pulse";
-                textClass = "fill-white font-bold text-sm";
+                fillClass = "fill-emerald-500 stroke-emerald-300 stroke-4 animate-pulse";
             } else if (highlightState.processed && highlightState.processed.has(node.id)) {
-                fillClass = "fill-emerald-500 stroke-emerald-300 stroke-2";
-                textClass = "fill-white font-bold text-sm";
+                fillClass = "fill-indigo-600 stroke-indigo-400 stroke-2";
             } else if (highlightState.target === node.id) {
-                fillClass = "fill-rose-500 stroke-rose-300 stroke-2";
-                textClass = "fill-white font-bold text-sm";
+                fillClass = "fill-rose-600 stroke-rose-400 stroke-2";
             } else if (highlightState.successor === node.id) {
                 fillClass = "fill-amber-500 stroke-amber-300 stroke-2";
-                textClass = "fill-white font-bold text-sm";
             }
 
             circle.setAttribute('class', fillClass);
 
-            // Node Value Text
             const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             text.setAttribute('x', node.x);
-            text.setAttribute('y', node.y + 5);
+            text.setAttribute('y', node.y + 4);
             text.setAttribute('text-anchor', 'middle');
             text.setAttribute('class', textClass);
             text.textContent = node.val;
 
             g.appendChild(circle);
             g.appendChild(text);
+
+            // Boundary Overlay Dot Rendering
+            if (activeBoundaryOverlay) {
+                let dotX = node.x;
+                let dotY = node.y;
+                let dotColor = "fill-white";
+
+                if (activeBoundaryOverlay === 'preorder') {
+                    dotX -= 18; // Left dot
+                    dotColor = "fill-indigo-400";
+                } else if (activeBoundaryOverlay === 'inorder') {
+                    dotY += 18; // Bottom dot
+                    dotColor = "fill-emerald-400";
+                } else if (activeBoundaryOverlay === 'postorder') {
+                    dotX += 18; // Right dot
+                    dotColor = "fill-amber-400";
+                }
+
+                const flagDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                flagDot.setAttribute('cx', dotX);
+                flagDot.setAttribute('cy', dotY);
+                flagDot.setAttribute('r', 4);
+                flagDot.setAttribute('class', `${dotColor} stroke-slate-900 stroke-1`);
+                g.appendChild(flagDot);
+            }
+
             svg.appendChild(g);
 
             drawNodes(svg, node.left, highlightState);
             drawNodes(svg, node.right, highlightState);
         }
 
-        // --- ANIMATION CONTROLLER & PLAYER ---
+        function enableBoundaryOverlay(mode) {
+            activeBoundaryOverlay = mode;
+            document.getElementById('boundary-mode-badge').classList.remove('hidden');
+            document.getElementById('boundary-mode-badge').textContent = `Boundary Flags: ${mode.toUpperCase()}`;
+            switchTab('simulator');
+            renderTree();
+            logAction(`Enabled ${mode.toUpperCase()} boundary flags overlay.`);
+        }
+
+        // Traversals
         function startTraversal(type) {
             stopAnimation();
             clearOutputBuffer();
             displayPseudocode(type);
-            animationQueue = [];
+            animationHistory = [];
+            currentStepIndex = -1;
 
             if (!root) {
-                setExplanation("Tree is empty. Insert nodes first.");
+                setExplanation("BST is empty.");
                 return;
             }
 
-            const processedNodes = new Set();
+            const processed = new Set();
 
             if (type === 'preorder') {
-                logAction("Started Pre-Order Traversal (Root, Left, Right).");
-                buildPreOrderSteps(root, processedNodes);
+                logAction("Building Pre-Order (NLR) Execution Steps.");
+                buildPreOrderHistory(root, processed, [], []);
             } else if (type === 'inorder') {
-                logAction("Started In-Order Traversal (Left, Root, Right).");
-                buildInOrderSteps(root, processedNodes);
+                logAction("Building In-Order (LNR) Execution Steps.");
+                buildInOrderHistory(root, processed, [], []);
             } else if (type === 'postorder') {
-                logAction("Started Post-Order Traversal (Left, Right, Root).");
-                buildPostOrderSteps(root, processedNodes);
+                logAction("Building Post-Order (LRN) Execution Steps.");
+                buildPostOrderHistory(root, processed, [], []);
             }
 
-            playQueue();
+            enableControls();
+            stepForward();
         }
 
-        function buildPreOrderSteps(node, processed) {
+        function buildPreOrderHistory(node, processed, stack, output) {
             if (!node) return;
+            const newStack = [...stack, `preOrder(${node.val})`];
+            processed.add(node.id);
+            const newOutput = [...output, node.val];
 
-            // Visit Root
-            animationQueue.push({
-                nodeId: node.id,
-                val: node.val,
+            animationHistory.push({
+                treeSnap: cloneTree(root),
+                visiting: node.id,
+                processed: new Set(processed),
+                codeKey: 'preorder',
                 codeLine: 2,
-                explanation: `[Pre-Order] Visit Root node (${node.val}) and output value.`,
-                processedState: new Set(processed)
+                explanation: `[NLR Pre-Order] Visit Root node (${node.val}) first and output value.`,
+                stack: newStack,
+                output: newOutput
             });
-            processed.add(node.id);
 
-            // Recurse Left
             if (node.left) {
-                animationQueue.push({
-                    nodeId: node.left.id,
+                animationHistory.push({
+                    treeSnap: cloneTree(root),
+                    visiting: node.left.id,
+                    processed: new Set(processed),
+                    codeKey: 'preorder',
                     codeLine: 3,
-                    explanation: `[Pre-Order] Move Left from node ${node.val} to ${node.left.val}.`,
-                    processedState: new Set(processed)
+                    explanation: `[NLR Pre-Order] Recurse Left pointer from ${node.val} -> ${node.left.val}.`,
+                    stack: newStack,
+                    output: newOutput
                 });
-                buildPreOrderSteps(node.left, processed);
+                buildPreOrderHistory(node.left, processed, newStack, newOutput);
             }
 
-            // Recurse Right
             if (node.right) {
-                animationQueue.push({
-                    nodeId: node.right.id,
+                animationHistory.push({
+                    treeSnap: cloneTree(root),
+                    visiting: node.right.id,
+                    processed: new Set(processed),
+                    codeKey: 'preorder',
                     codeLine: 4,
-                    explanation: `[Pre-Order] Move Right from node ${node.val} to ${node.right.val}.`,
-                    processedState: new Set(processed)
+                    explanation: `[NLR Pre-Order] Recurse Right pointer from ${node.val} -> ${node.right.val}.`,
+                    stack: newStack,
+                    output: newOutput
                 });
-                buildPreOrderSteps(node.right, processed);
+                buildPreOrderHistory(node.right, processed, newStack, newOutput);
             }
         }
 
-        function buildInOrderSteps(node, processed) {
+        function buildInOrderHistory(node, processed, stack, output) {
             if (!node) return;
+            const newStack = [...stack, `inOrder(${node.val})`];
 
-            // Recurse Left
             if (node.left) {
-                animationQueue.push({
-                    nodeId: node.left.id,
+                animationHistory.push({
+                    treeSnap: cloneTree(root),
+                    visiting: node.left.id,
+                    processed: new Set(processed),
+                    codeKey: 'inorder',
                     codeLine: 2,
-                    explanation: `[In-Order] Traverse Left branch of node ${node.val}.`,
-                    processedState: new Set(processed)
+                    explanation: `[LNR In-Order] Recurse Left pointer under node ${node.val}.`,
+                    stack: newStack,
+                    output: [...output]
                 });
-                buildInOrderSteps(node.left, processed);
+                buildInOrderHistory(node.left, processed, newStack, output);
             }
 
-            // Visit Root
-            animationQueue.push({
-                nodeId: node.id,
-                val: node.val,
+            processed.add(node.id);
+            const newOutput = [...output, node.val];
+            animationHistory.push({
+                treeSnap: cloneTree(root),
+                visiting: node.id,
+                processed: new Set(processed),
+                codeKey: 'inorder',
                 codeLine: 3,
-                explanation: `[In-Order] Visit Node (${node.val}). In BST, this yields sorted sequence.`,
-                processedState: new Set(processed)
+                explanation: `[LNR In-Order] Visit Root node (${node.val}). Yields ascending sorted BST values.`,
+                stack: newStack,
+                output: newOutput
             });
-            processed.add(node.id);
 
-            // Recurse Right
             if (node.right) {
-                animationQueue.push({
-                    nodeId: node.right.id,
+                animationHistory.push({
+                    treeSnap: cloneTree(root),
+                    visiting: node.right.id,
+                    processed: new Set(processed),
+                    codeKey: 'inorder',
                     codeLine: 4,
-                    explanation: `[In-Order] Traverse Right branch of node ${node.val}.`,
-                    processedState: new Set(processed)
+                    explanation: `[LNR In-Order] Recurse Right pointer under node ${node.val}.`,
+                    stack: newStack,
+                    output: newOutput
                 });
-                buildInOrderSteps(node.right, processed);
+                buildInOrderHistory(node.right, processed, newStack, newOutput);
             }
         }
 
-        function buildPostOrderSteps(node, processed) {
+        function buildPostOrderHistory(node, processed, stack, output) {
             if (!node) return;
+            const newStack = [...stack, `postOrder(${node.val})`];
 
-            // Recurse Left
             if (node.left) {
-                animationQueue.push({
-                    nodeId: node.left.id,
+                animationHistory.push({
+                    treeSnap: cloneTree(root),
+                    visiting: node.left.id,
+                    processed: new Set(processed),
+                    codeKey: 'postorder',
                     codeLine: 2,
-                    explanation: `[Post-Order] Go Left towards leaf node under node ${node.val}.`,
-                    processedState: new Set(processed)
+                    explanation: `[LRN Post-Order] Recurse Left pointer under node ${node.val}.`,
+                    stack: newStack,
+                    output: [...output]
                 });
-                buildPostOrderSteps(node.left, processed);
+                buildPostOrderHistory(node.left, processed, newStack, output);
             }
 
-            // Recurse Right
             if (node.right) {
-                animationQueue.push({
-                    nodeId: node.right.id,
+                animationHistory.push({
+                    treeSnap: cloneTree(root),
+                    visiting: node.right.id,
+                    processed: new Set(processed),
+                    codeKey: 'postorder',
                     codeLine: 3,
-                    explanation: `[Post-Order] Go Right under node ${node.val}.`,
-                    processedState: new Set(processed)
+                    explanation: `[LRN Post-Order] Recurse Right pointer under node ${node.val}.`,
+                    stack: newStack,
+                    output: [...output]
                 });
-                buildPostOrderSteps(node.right, processed);
+                buildPostOrderHistory(node.right, processed, newStack, output);
             }
 
-            // Visit Root
-            animationQueue.push({
-                nodeId: node.id,
-                val: node.val,
-                codeLine: 4,
-                explanation: `[Post-Order] Visit Node (${node.val}) after both subtrees are processed.`,
-                processedState: new Set(processed)
-            });
             processed.add(node.id);
+            const newOutput = [...output, node.val];
+            animationHistory.push({
+                treeSnap: cloneTree(root),
+                visiting: node.id,
+                processed: new Set(processed),
+                codeKey: 'postorder',
+                codeLine: 4,
+                explanation: `[LRN Post-Order] Visit Root node (${node.val}) after both children subtrees finish.`,
+                stack: newStack,
+                output: newOutput
+            });
         }
 
-        function animateInsertion(val) {
+        // Insertion History Builder
+        function buildInsertionHistory(val) {
             displayPseudocode('insert');
-            animationQueue = [];
-            
-            let curr = root;
-            let parent = null;
+            animationHistory = [];
+            currentStepIndex = -1;
 
-            if (!root) {
-                root = new TreeNode(val);
-                renderTree();
-                logAction(`Inserted ${val} as root node.`);
-                setExplanation(`Root was empty. Inserted ${val} as root.`);
-                return;
-            }
+            let curr = root;
+            const stack = [`insertNode(${val})`];
 
             while (curr) {
-                parent = curr;
                 if (val < curr.val) {
-                    animationQueue.push({
-                        nodeId: curr.id,
+                    animationHistory.push({
+                        treeSnap: cloneTree(root),
+                        visiting: curr.id,
+                        codeKey: 'insert',
                         codeLine: 2,
-                        explanation: `Search Insert: ${val} < ${curr.val}, move LEFT.`,
-                        processedState: new Set()
+                        explanation: `Insertion Search: ${val} < ${curr.val}. Follow Left Pointer.`,
+                        stack: [...stack, `node(${curr.val})`]
                     });
                     curr = curr.left;
                 } else {
-                    animationQueue.push({
-                        nodeId: curr.id,
+                    animationHistory.push({
+                        treeSnap: cloneTree(root),
+                        visiting: curr.id,
+                        codeKey: 'insert',
                         codeLine: 4,
-                        explanation: `Search Insert: ${val} > ${curr.val}, move RIGHT.`,
-                        processedState: new Set()
+                        explanation: `Insertion Search: ${val} > ${curr.val}. Follow Right Pointer.`,
+                        stack: [...stack, `node(${curr.val})`]
                     });
                     curr = curr.right;
                 }
             }
 
-            // Final Insertion event
-            animationQueue.push({
-                customAction: () => {
+            const updatedTree = cloneTree(root);
+            insertNodeCore(updatedTree, val);
+
+            animationHistory.push({
+                treeSnap: updatedTree,
+                codeKey: 'insert',
+                codeLine: 1,
+                explanation: `Reached NULL pointer (-1). Inserted new leaf node ${val}.`,
+                stack: stack,
+                onApply: () => { 
                     root = insertNodeCore(root, val);
-                    renderTree();
-                    logAction(`Inserted node with value ${val}.`);
-                    setExplanation(`Inserted node ${val} into BST.`);
-                },
-                explanation: `Found empty spot. Inserted node ${val}.`
+                    updateArrayTable();
+                }
             });
 
-            playQueue();
+            enableControls();
+            stepForward();
         }
 
-        // --- DELETION SCENARIO ANIMATIONS ---
-        function animateDeletion(val) {
+        // Deletion History Builder
+        function buildDeletionHistory(val) {
             displayPseudocode('delete');
-            animationQueue = [];
+            animationHistory = [];
+            currentStepIndex = -1;
 
             let curr = root;
             let targetNode = null;
 
-            // Search Path Animation
             while (curr) {
                 if (curr.val === val) {
                     targetNode = curr;
                     break;
                 }
                 if (val < curr.val) {
-                    animationQueue.push({
-                        nodeId: curr.id,
+                    animationHistory.push({
+                        treeSnap: cloneTree(root),
+                        visiting: curr.id,
+                        codeKey: 'delete',
                         codeLine: 2,
-                        explanation: `Deletion Search: ${val} < ${curr.val}, traversing Left.`,
-                        processedState: new Set()
+                        explanation: `Deletion Search: ${val} < ${curr.val}, check Left branch.`,
+                        stack: [`deleteNode(${val})`]
                     });
                     curr = curr.left;
                 } else {
-                    animationQueue.push({
-                        nodeId: curr.id,
+                    animationHistory.push({
+                        treeSnap: cloneTree(root),
+                        visiting: curr.id,
+                        codeKey: 'delete',
                         codeLine: 3,
-                        explanation: `Deletion Search: ${val} > ${curr.val}, traversing Right.`,
-                        processedState: new Set()
+                        explanation: `Deletion Search: ${val} > ${curr.val}, check Right branch.`,
+                        stack: [`deleteNode(${val})`]
                     });
                     curr = curr.right;
                 }
@@ -1023,109 +1182,122 @@
 
             if (!targetNode) return;
 
-            // Case Analysis
             const hasLeft = targetNode.left !== null;
             const hasRight = targetNode.right !== null;
 
-            // Step 1: Highlight Target
-            animationQueue.push({
-                targetId: targetNode.id,
+            animationHistory.push({
+                treeSnap: cloneTree(root),
+                target: targetNode.id,
+                codeKey: 'delete',
                 codeLine: 4,
-                explanation: `Target Node (${targetNode.val}) located. Evaluating deletion case...`,
-                processedState: new Set()
+                explanation: `Target Node ${val} located. Checking Eduqas deletion case rules...`,
+                stack: [`deleteNode(${val})`]
             });
 
             if (!hasLeft && !hasRight) {
                 // CASE 1: LEAF NODE
-                animationQueue.push({
-                    targetId: targetNode.id,
+                const nextTree = cloneTree(root);
+                deleteNodeCore(nextTree, val);
+
+                animationHistory.push({
+                    treeSnap: nextTree,
+                    target: targetNode.id,
+                    codeKey: 'delete',
                     codeLine: 5,
-                    explanation: `CASE 1: Node (${targetNode.val}) is a LEAF (0 children). Simply remove pointer from parent.`,
-                    customAction: () => {
+                    explanation: `Eduqas Case 1: Leaf node (0 children). Set parent pointer referencing node ${val} to -1 (NULL).`,
+                    stack: [`deleteNode(${val})`],
+                    onApply: () => { 
                         root = deleteNodeCore(root, val);
-                        renderTree();
-                        logAction(`Deleted leaf node ${val} (Case 1).`);
+                        updateArrayTable();
                     }
                 });
             } else if (!hasLeft || !hasRight) {
-                // CASE 2: SINGLE CHILD
+                // CASE 2: 1 CHILD NODE
                 const childNode = targetNode.left || targetNode.right;
-                animationQueue.push({
-                    targetId: targetNode.id,
-                    successorId: childNode.id,
-                    codeLine: 5,
-                    explanation: `CASE 2: Node (${targetNode.val}) has 1 CHILD (${childNode.val}). Bypass target node and link parent directly to child.`,
-                    customAction: () => {
+                const nextTree = cloneTree(root);
+                deleteNodeCore(nextTree, val);
+
+                animationHistory.push({
+                    treeSnap: nextTree,
+                    target: targetNode.id,
+                    successor: childNode.id,
+                    codeKey: 'delete',
+                    codeLine: 6,
+                    explanation: `Eduqas Case 2: Node has 1 child (${childNode.val}). Bypass target node by connecting parent pointer directly to child.`,
+                    stack: [`deleteNode(${val})`],
+                    onApply: () => { 
                         root = deleteNodeCore(root, val);
-                        renderTree();
-                        logAction(`Deleted node ${val} with 1 child (Case 2). Bypassed to node ${childNode.val}.`);
+                        updateArrayTable();
                     }
                 });
             } else {
-                // CASE 3: TWO CHILDREN -> IN-ORDER SUCCESSOR
-                let succParent = targetNode;
+                // CASE 3: 2 CHILDREN NODES
                 let succ = targetNode.right;
-                
-                animationQueue.push({
-                    targetId: targetNode.id,
-                    successorId: succ.id,
+                animationHistory.push({
+                    treeSnap: cloneTree(root),
+                    target: targetNode.id,
+                    successor: succ.id,
+                    codeKey: 'delete',
                     codeLine: 7,
-                    explanation: `CASE 3: Node (${targetNode.val}) has 2 CHILDREN. Step into right subtree to find In-Order Successor...`,
-                    processedState: new Set()
+                    explanation: `Eduqas Case 3: Node has 2 children. Find In-Order Successor (smallest value in right subtree)...`,
+                    stack: [`deleteNode(${val})`]
                 });
 
                 while (succ.left) {
-                    succParent = succ;
                     succ = succ.left;
-                    animationQueue.push({
-                        targetId: targetNode.id,
-                        successorId: succ.id,
-                        codeLine: 7,
-                        explanation: `Traversing left child in right subtree... Current candidate: ${succ.val}`,
-                        processedState: new Set()
+                    animationHistory.push({
+                        treeSnap: cloneTree(root),
+                        target: targetNode.id,
+                        successor: succ.id,
+                        codeKey: 'delete',
+                        codeLine: 8,
+                        explanation: `Traversing left child pointers in right subtree... Successor candidate: ${succ.val}`,
+                        stack: [`deleteNode(${val})`, `findMin(${succ.val})`]
                     });
                 }
 
                 const succVal = succ.val;
+                const copiedTree = cloneTree(root);
+                let tNode = findNode(copiedTree, val);
+                if (tNode) tNode.val = succVal;
 
-                animationQueue.push({
-                    targetId: targetNode.id,
-                    successorId: succ.id,
-                    codeLine: 8,
-                    explanation: `Found In-Order Successor (${succVal}) [smallest node in right subtree]. Copy value ${succVal} into target node ${targetNode.val}.`,
-                    customAction: () => {
-                        targetNode.val = succVal;
-                        renderTree();
-                    }
+                animationHistory.push({
+                    treeSnap: copiedTree,
+                    target: targetNode.id,
+                    successor: succ.id,
+                    codeKey: 'delete',
+                    codeLine: 9,
+                    explanation: `In-Order Successor located (${succVal}). Copy value ${succVal} into target node position.`,
+                    stack: [`deleteNode(${val})`]
                 });
 
-                animationQueue.push({
-                    codeLine: 9,
-                    explanation: `Now recursively delete original successor leaf/node (${succVal}) from right subtree.`,
-                    customAction: () => {
-                        targetNode.right = deleteNodeCore(targetNode.right, succVal);
-                        renderTree();
-                        logAction(`Deleted node ${val} with 2 children (Case 3) via In-Order Successor replacement (${succVal}).`);
+                const finalTree = cloneTree(copiedTree);
+                if (tNode) tNode.right = deleteNodeCore(tNode.right, succVal);
+
+                animationHistory.push({
+                    treeSnap: finalTree,
+                    codeKey: 'delete',
+                    codeLine: 10,
+                    explanation: `Recursively remove original successor leaf node (${succVal}). Deletion complete!`,
+                    stack: [`deleteNode(${val})`],
+                    onApply: () => { 
+                        root = deleteNodeCore(root, val);
+                        updateArrayTable();
                     }
                 });
             }
 
-            playQueue();
+            enableControls();
+            stepForward();
         }
 
         function deleteNodeCore(node, key) {
             if (!node) return null;
-
-            if (key < node.val) {
-                node.left = deleteNodeCore(node.left, key);
-            } else if (key > node.val) {
-                node.right = deleteNodeCore(node.right, key);
-            } else {
-                // Case 1 & 2
+            if (key < node.val) node.left = deleteNodeCore(node.left, key);
+            else if (key > node.val) node.right = deleteNodeCore(node.right, key);
+            else {
                 if (!node.left) return node.right;
                 if (!node.right) return node.left;
-
-                // Case 3
                 let minNode = getMin(node.right);
                 node.val = minNode.val;
                 node.right = deleteNodeCore(node.right, minNode.val);
@@ -1138,136 +1310,146 @@
             return node;
         }
 
-        // Playback Loop Execution
-        function playQueue() {
-            if (animationQueue.length === 0) return;
-            
-            isAnimating = true;
-            isPaused = false;
-            updatePlayButtons();
-
-            function processNextStep() {
-                if (isPaused) return;
-
-                if (animationQueue.length === 0) {
-                    stopAnimation();
-                    setExplanation("Operation complete.");
-                    return;
-                }
-
-                const step = animationQueue.shift();
-
-                if (step.customAction) {
-                    step.customAction();
-                }
-
-                // Render highlighting state
-                const state = {
-                    visiting: step.nodeId,
-                    target: step.targetId,
-                    successor: step.successorId,
-                    processed: step.processedState
-                };
-
-                renderTree(state);
-
-                if (step.codeLine !== undefined) {
-                    const pseudocodeKey = Object.keys(PSEUDOCODE_TEMPLATES).find(k => 
-                        document.getElementById('pseudocode-title').textContent.toLowerCase().includes(k)
-                    ) || 'preorder';
-                    displayPseudocode(pseudocodeKey, step.codeLine);
-                }
-
-                if (step.explanation) {
-                    setExplanation(step.explanation);
-                }
-
-                if (step.val !== undefined) {
-                    appendOutputBuffer(step.val);
-                }
-
-                animationTimer = setTimeout(processNextStep, animationSpeed);
+        // Stepping Animation Engine
+        function stepForward() {
+            if (currentStepIndex < animationHistory.length - 1) {
+                currentStepIndex++;
+                applyStepState(currentStepIndex);
+            } else if (isAutoPlaying) {
+                stopAnimation();
             }
+        }
 
-            processNextStep();
+        function stepBackward() {
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                applyStepState(currentStepIndex);
+            }
+        }
+
+        function applyStepState(index) {
+            const step = animationHistory[index];
+            if (!step) return;
+
+            renderTree(step.treeSnap, {
+                visiting: step.visiting,
+                target: step.target,
+                successor: step.successor,
+                processed: step.processed
+            });
+
+            if (step.onApply) step.onApply();
+            if (step.codeKey && step.codeLine !== undefined) displayPseudocode(step.codeKey, step.codeLine);
+
+            renderCallStack(step.stack || []);
+            if (step.explanation) setExplanation(step.explanation);
+            if (step.output) renderOutputBuffer(step.output);
+
+            document.getElementById('step-counter-badge').textContent = `Step: ${index + 1} / ${animationHistory.length}`;
+            document.getElementById('btn-step-back').disabled = index <= 0;
+            document.getElementById('btn-step-forward').disabled = index >= animationHistory.length - 1;
         }
 
         function togglePausePlay() {
-            if (!isAnimating) return;
-            isPaused = !isPaused;
+            if (animationHistory.length === 0) return;
+            isAutoPlaying = !isAutoPlaying;
             const icon = document.getElementById('play-pause-icon');
-            if (isPaused) {
-                clearTimeout(animationTimer);
-                icon.className = "fa-solid fa-play";
-                logAction("Animation paused.");
-            } else {
+
+            if (isAutoPlaying) {
                 icon.className = "fa-solid fa-pause";
-                logAction("Animation resumed.");
-                playQueue();
+                runAutoPlayLoop();
+            } else {
+                icon.className = "fa-solid fa-play";
+                clearTimeout(autoPlayTimer);
             }
         }
 
-        function stepAnimationForward() {
-            if (!isAnimating || animationQueue.length === 0) return;
-            if (!isPaused) togglePausePlay();
-
-            const step = animationQueue.shift();
-            if (step.customAction) step.customAction();
-
-            renderTree({
-                visiting: step.nodeId,
-                target: step.targetId,
-                successor: step.successorId,
-                processed: step.processedState
-            });
-
-            if (step.explanation) setExplanation(step.explanation);
-            if (step.val !== undefined) appendOutputBuffer(step.val);
-
-            if (animationQueue.length === 0) stopAnimation();
+        function runAutoPlayLoop() {
+            if (!isAutoPlaying) return;
+            if (currentStepIndex >= animationHistory.length - 1) {
+                stopAnimation();
+                return;
+            }
+            stepForward();
+            autoPlayTimer = setTimeout(runAutoPlayLoop, animationSpeed);
         }
 
         function stopAnimation() {
-            clearTimeout(animationTimer);
-            isAnimating = false;
-            isPaused = false;
-            animationQueue = [];
-            updatePlayButtons();
+            clearTimeout(autoPlayTimer);
+            isAutoPlaying = false;
+            animationHistory = [];
+            currentStepIndex = -1;
+
+            document.getElementById('play-pause-icon').className = "fa-solid fa-play";
+            document.getElementById('btn-step-back').disabled = true;
+            document.getElementById('btn-step-forward').disabled = true;
+            document.getElementById('btn-pause-play').disabled = true;
+            document.getElementById('btn-stop').disabled = true;
+
+            document.getElementById('step-counter-badge').textContent = 'Step: 0 / 0';
             renderTree();
+            renderCallStack([]);
+            setExplanation("Animation reset.");
         }
 
-        function updatePlayButtons() {
-            document.getElementById('btn-pause-play').disabled = !isAnimating;
-            document.getElementById('btn-step').disabled = !isAnimating;
-            document.getElementById('btn-stop').disabled = !isAnimating;
+        function enableControls() {
+            document.getElementById('btn-pause-play').disabled = false;
+            document.getElementById('btn-stop').disabled = false;
+        }
 
-            const statusDot = document.getElementById('status-dot');
-            const statusText = document.getElementById('current-action-text');
+        // Eduqas 2D Memory Array Mapper
+        function updateArrayTable() {
+            const tableBody = document.getElementById('array-table-body');
+            tableBody.innerHTML = '';
 
-            if (isAnimating) {
-                statusDot.className = "w-3 h-3 rounded-full bg-amber-500 animate-ping";
-                statusText.textContent = "Algorithm Executing...";
-            } else {
-                statusDot.className = "w-3 h-3 rounded-full bg-emerald-500 animate-pulse";
-                statusText.textContent = "Interactive Tree Canvas Ready";
+            if (!root) {
+                tableBody.innerHTML = '<tr><td colspan="5" class="p-3 text-slate-500 italic text-center">Tree is empty. Memory array has no allocated nodes.</td></tr>';
+                return;
             }
+
+            const nodesList = [];
+            function collect(node) {
+                if (!node) return;
+                nodesList.push(node);
+                collect(node.left);
+                collect(node.right);
+            }
+            collect(root);
+
+            nodesList.forEach((n, idx) => {
+                const leftIdx = n.left ? nodesList.indexOf(n.left) : -1;
+                const rightIdx = n.right ? nodesList.indexOf(n.right) : -1;
+                const isRoot = idx === 0;
+
+                const row = document.createElement('tr');
+                row.className = isRoot ? 'bg-emerald-950/40 font-bold' : 'hover:bg-slate-900';
+
+                row.innerHTML = `
+                    <td class="p-3 font-mono ${isRoot ? 'text-emerald-400' : 'text-slate-300'}">${idx} ${isRoot ? '(Root)' : ''}</td>
+                    <td class="p-3 font-mono font-bold text-white">${n.val}</td>
+                    <td class="p-3 font-mono ${leftIdx === -1 ? 'text-rose-400' : 'text-emerald-400'}">${leftIdx === -1 ? '-1 (NULL)' : leftIdx}</td>
+                    <td class="p-3 font-mono ${rightIdx === -1 ? 'text-rose-400' : 'text-emerald-400'}">${rightIdx === -1 ? '-1 (NULL)' : rightIdx}</td>
+                    <td class="p-3 font-mono text-slate-400 text-[11px]">${isRoot ? 'Allocated (Root Node)' : 'Allocated Node'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
         }
 
-        // Buffer Utilities
-        function appendOutputBuffer(val) {
+        function renderOutputBuffer(arr) {
             const buffer = document.getElementById('output-buffer');
-            if (buffer.querySelector('span.italic')) {
-                buffer.innerHTML = '';
+            if (!arr || arr.length === 0) {
+                clearOutputBuffer();
+                return;
             }
-            const chip = document.createElement('span');
-            chip.className = "px-2.5 py-1 bg-sky-100 dark:bg-sky-900/60 text-sky-700 dark:text-sky-300 rounded-lg font-bold shadow-sm animate-bounce";
-            chip.textContent = val;
-            buffer.appendChild(chip);
+            let html = '';
+            arr.forEach(val => {
+                html += `<span class="px-2.5 py-1 bg-emerald-950 border border-emerald-700 text-emerald-300 rounded-lg font-bold font-mono text-xs shadow-sm">${val}</span>`;
+            });
+            buffer.innerHTML = html;
         }
 
         function clearOutputBuffer() {
-            const buffer = document.getElementById('output-buffer');
-            buffer.innerHTML = '<span class="text-xs text-slate-400 italic">Traversal output will appear here sequentially...</span>';
+            document.getElementById('output-buffer').innerHTML = '<span class="text-xs text-slate-500 italic">Output elements will accumulate here as nodes are visited...</span>';
         }
 
         function copyOutputBuffer() {
@@ -1279,7 +1461,6 @@
 
             if (!text) return;
 
-            // Use document.execCommand for iframe compatibility
             const temp = document.createElement('textarea');
             temp.value = text;
             document.body.appendChild(temp);
@@ -1287,8 +1468,8 @@
             document.execCommand('copy');
             document.body.removeChild(temp);
 
-            logAction(`Copied traversal output buffer: [${text}]`);
-            alert(`Copied output to clipboard: [${text}]`);
+            logAction(`Copied output traversal: [${text}]`);
+            alert(`Copied traversal array to clipboard: [${text}]`);
         }
     </script>
 </body>
